@@ -68,7 +68,7 @@ export const validEmail = (msg = "Invalid e-mail") => (value: string) =>
     : msg;
 
 export const required = <FieldValue>(
-  errorMessage = "Обязательное поле"
+  errorMessage: string = "Required"
 ): FieldValidator<FieldValue> => (value) =>
   isEmpty(value) ? errorMessage : undefined;
 
@@ -85,7 +85,7 @@ export const isTrue = (errorMessage: string) => (value: boolean) =>
 
 export const maxLength = <FieldValue>(
   max: number,
-  errorMessage = "Слишком длинный"
+  errorMessage = "Too long"
 ): FieldValidator<string | FieldValue[]> => (value) =>
   typeof value === "string" || Array.isArray(value)
     ? value.length > max
@@ -95,7 +95,7 @@ export const maxLength = <FieldValue>(
 
 export const minLength = <FieldValue>(
   min: number,
-  errorMessage = "Слишком короткий"
+  errorMessage = "Too short"
 ): FieldValidator<string | FieldValue[]> => (value) =>
   typeof value === "string" || Array.isArray(value)
     ? value.length < min
