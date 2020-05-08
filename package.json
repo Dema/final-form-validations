@@ -22,13 +22,32 @@
     "test:unit": "cross-env CI=1 react-scripts test --env=jsdom",
     "test:watch": "react-scripts test --env=jsdom"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx}": [
+      "prettier --write",
+      "eslint --no-ignore --max-warnings=0 --fix",
+      "git add"
+    ],
+    "*.{json}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
   "devDependencies": {
+    "@commitlint/config-conventional": "^8.3.4",
     "@types/jest": "^25.1.4",
     "@types/lodash.get": "^4.4.6",
     "@types/lodash.set": "^4.3.6",
     "@typescript-eslint/eslint-plugin": "^2.26.0",
     "@typescript-eslint/parser": "^2.26.0",
     "babel-eslint": "^10.0.3",
+    "commitlint": "^8.3.5",
     "cross-env": "^7.0.2",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.7.0",
@@ -41,6 +60,7 @@
     "eslint-plugin-react": "^7.17.0",
     "eslint-plugin-standard": "^4.0.1",
     "gh-pages": "^2.2.0",
+    "lint-staged": "^10.2.2",
     "microbundle-crl": "^0.13.10",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.0.4"
@@ -49,6 +69,7 @@
     "dist"
   ],
   "dependencies": {
+    "husky": "^4.2.5",
     "lodash.get": "^4.4.2",
     "lodash.set": "^4.3.2"
   }
