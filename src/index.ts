@@ -132,7 +132,7 @@ export const fieldsMatch = (
     [field2Name]: err,
   };
 };
-export const geField = <T>(
+export const greaterOrEqualThanField = <T>(
   otherField: string,
   errorMessage: string
 ): FieldValidator<T> =>
@@ -143,7 +143,7 @@ export const geField = <T>(
       : errorMessage
   );
 
-export const leField = <T>(
+export const lessOrEqualThanField = <T>(
   otherField: string,
   errorMessage: string
 ): FieldValidator<T> =>
@@ -159,7 +159,7 @@ export const less = (than: number, errorMessage: string) =>
     Number(value) < Number(than) ? undefined : errorMessage
   );
 
-export const le = (than: number, errorMessage: string) =>
+export const lessOrEqual = (than: number, errorMessage: string) =>
   withEmpty((value) =>
     Number(value) <= Number(than) ? undefined : errorMessage
   );
@@ -169,7 +169,7 @@ export const greater = (than: number, errorMessage: string) =>
     Number(value) > Number(than) ? undefined : errorMessage
   );
 
-export const ge = (than: number, errorMessage: string) =>
+export const greaterOrEqual = (than: number, errorMessage: string) =>
   withEmpty((value) =>
     Number(value) >= Number(than) ? undefined : errorMessage
   );
