@@ -2,7 +2,7 @@
 
 > set of validators to use with final-form or redux-form
 
-[![NPM](https://img.shields.io/npm/v/final-form-validations.svg)](https://www.npmjs.com/package/final-form-validations) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+[![NPM](https://img.shields.io/npm/v/@dmitry.olyenyov/final-form-validations.svg)](https://www.npmjs.com/package/@dmitry.olyenyov/final-form-validations) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 ## Install
 
@@ -28,11 +28,8 @@ import {
 const validators = createValidator({
   lastName: [
     requried("Required!"),
-    minLength(
-      2,
-      "Please enter at least 2 chars",
-      maxLength(500, "Name is too long")
-    ),
+    minLength(2, "Please enter at least 2 chars"),
+    maxLength(500, "Name is too long"),
   ],
   description: required("Required!"),
 });
