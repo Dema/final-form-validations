@@ -1,14 +1,34 @@
 import get from "lodash.get";
 import set from "lodash.set";
+import {
+  FieldValidator,
+  isEmpty,
+  withEmpty,
+  join,
+  RecordValidator,
+} from "./helpers";
 
-export type FieldValidator<T> = (
-  value: T,
-  values: object
-) => string | undefined;
-
-export type RecordValidator = (
-  values: object
-) => { [key: string]: string | undefined } | undefined;
+type Rules = {
+  [key: string]: FieldValidator<unknown> | FieldValidator<unknown>[];
+};
+export const createValidator = (rules: Rules) => {
+  return (values: object) => {
+    const errors = {};
+    Object.keys(rules).forEach((key) => {
+      // concat enables both functions and arrays of functions
+      const rule = join(([] as FieldValidator<unknown>[]).concat(rules[key]));
+      const error = rule(get(values, key), values);
+      if (typeof error === "string") {
+        set(errors, key, error);
+      } else if (error != null && typeof error === "object") {
+        Object.keys(error).forEach((fieldName) =>
+          set(errors, fieldName, error[fieldName])
+        );
+      }
+    });
+    return errors;
+  };
+};
 
 export const composeFieldValidators = <T>(
   ...validators: Array<FieldValidator<T>>
@@ -21,19 +41,17 @@ export const composeFieldValidators = <T>(
       undefined
     );
 
-const withEmpty = <T>(f: FieldValidator<T>): FieldValidator<T> => (
-  value,
-  values
-) => {
-  if (!isEmpty(value)) {
-    return f(value, values);
-  } else {
-    return undefined;
-  }
-};
+export const composeRecordValidators = (
+  ...validators: Array<RecordValidator>
+): RecordValidator => (values) =>
+  validators
+    .filter((v) => typeof v === "function")
+    .reduce((acc, validator) => ({ ...acc, ...validator(values) }), {});
 
-export const nonNegativeNumber = (
-  errorMessage = "Должно быть положительное число"
+// Validators
+
+export const positiveNumber = (
+  errorMessage = "Must be  positive number"
 ): FieldValidator<string | number> => (value: string | number) => {
   if (value) {
     const n = Number(value);
@@ -42,26 +60,12 @@ export const nonNegativeNumber = (
   return undefined;
 };
 
-export const isEmpty = (value: unknown): value is null | undefined =>
-  value == null || (typeof value === "string" && value.trim().length === 0);
-
-export const validEmail = (msg = "Некорректный адрес почты") => (
-  value: string
-) =>
+export const validEmail = (msg = "Invalid e-mail") => (value: string) =>
   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
     value
   )
     ? undefined
     : msg;
-
-// export const filled = (errorMessage: string = "Incomplete") =>
-//   withEmpty(value =>
-//     typeof value === "string"
-//       ? value.includes("_")
-//         ? errorMessage
-//         : undefined
-//       : errorMessage
-//   );
 
 export const required = <FieldValue>(
   errorMessage = "Обязательное поле"
@@ -98,11 +102,6 @@ export const minLength = <FieldValue>(
       ? errorMessage
       : undefined
     : undefined;
-
-// export const composeRecordValidators = (...validators) => (values) =>
-//   validators
-//     .filter((v) => typeof v === "function")
-//     .reduce((acc, validator) => ({ ...acc, ...validator(values) }), {});
 
 export const filled = (errorMessage = "Incomplete") =>
   withEmpty((value) =>
@@ -174,33 +173,3 @@ export const ge = (than: number, errorMessage: string) =>
   withEmpty((value) =>
     Number(value) >= Number(than) ? undefined : errorMessage
   );
-
-// End of rules
-const join = <T>(rules: FieldValidator<T>[]): FieldValidator<T> => (
-  value,
-  values
-) =>
-  rules
-    .map((rule) => rule(value, values))
-    .filter((error) => typeof error === "object" || !!error)[0];
-type Rules = {
-  [key: string]: FieldValidator<unknown> | FieldValidator<unknown>[];
-};
-export const createValidator = (rules: Rules) => {
-  return (values: object) => {
-    const errors = {};
-    Object.keys(rules).forEach((key) => {
-      // concat enables both functions and arrays of functions
-      const rule = join(([] as FieldValidator<unknown>[]).concat(rules[key]));
-      const error = rule(get(values, key), values);
-      if (typeof error === "string") {
-        set(errors, key, error);
-      } else if (error != null && typeof error === "object") {
-        Object.keys(error).forEach((fieldName) =>
-          set(errors, fieldName, error[fieldName])
-        );
-      }
-    });
-    return errors;
-  };
-};
