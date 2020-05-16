@@ -69,7 +69,8 @@
     "typedoc": "^0.17.6"
   },
   "files": [
-    "dist"
+    "dist",
+    "docs"
   ],
   "dependencies": {
     "lodash.get": "^4.4.2",
