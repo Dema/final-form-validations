@@ -18,12 +18,13 @@ import { Form, Field } from "rect-final-form";
 
 import {
   createValidator,
+  composeFieldValidators,
   required,
   minLength,
   maxLength,
   le,
   ge,
-} from "final-form-validations";
+} from "@dmitry.olyenyov/final-form-validations";
 
 const validators = createValidator({
   lastName: [
