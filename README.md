@@ -22,8 +22,7 @@ import {
   required,
   minLength,
   maxLength,
-  le,
-  ge,
+  lessOrEqual,
 } from "@dmitry.olyenyov/final-form-validations";
 
 const validators = createValidator({
@@ -45,8 +44,8 @@ class Example extends Component {
           name="someField"
           component="input"
           validate={composeFieldValidators(
-            requried("Required!"),
-            le(1000, "Must be less than 1000")
+            required("Required!"),
+            lessOrEqual(1000, "Must be less than 1000")
           )}
         />
       </Form>
