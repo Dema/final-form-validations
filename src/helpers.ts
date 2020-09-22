@@ -1,4 +1,3 @@
-import get from "lodash.get";
 import set from "lodash.set";
 
 /**
@@ -82,3 +81,16 @@ export const composeRecordValidators = (
   validators
     .filter((v) => typeof v === "function")
     .reduce((acc, validator) => ({ ...acc, ...validator(values) }), {});
+
+export const get = <T>(value: any, path: string, defaultValue?: T): T => {
+  return String(path)
+    .split(".")
+    .reduce((acc, v) => {
+      try {
+        acc = acc[v];
+      } catch (e) {
+        return defaultValue;
+      }
+      return acc;
+    }, value);
+};
