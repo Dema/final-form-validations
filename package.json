@@ -1,6 +1,6 @@
 {
   "name": "@dmitry.olyenyov/final-form-validations",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "set of validators to use with final-form or redux-form",
   "author": "Dema",
   "license": "MIT",

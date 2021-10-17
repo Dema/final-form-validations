@@ -5,15 +5,15 @@ import set from "lodash.set";
  * or string with error message
  */
 export type FieldValidator = (
-  value: unknown,
-  values: object
+  value: any,
+  values: Record<string, any>
 ) => string | undefined;
 
 export type RecordValidator = (
   values: object
 ) => { [key: string]: string | undefined } | undefined;
 
-export const isEmpty = (value: unknown): value is null | undefined =>
+export const isEmpty = (value: unknown): value is null | undefined | "" =>
   value == null || (typeof value === "string" && value.trim().length === 0);
 
 export const withEmpty = (f: FieldValidator): FieldValidator => (
@@ -66,7 +66,7 @@ export const createValidator = (rules: Rules) => {
 
 export const composeFieldValidators = (
   ...validators: Array<FieldValidator>
-): FieldValidator => (value: unknown, values: object) =>
+): FieldValidator => (value: any, values: object) =>
   validators
     .filter((v) => typeof v === "function")
     .reduce(
